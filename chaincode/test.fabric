@@ -1,0 +1,14 @@
+[
+    {
+        "invoke": "InitLedger",
+        "args": []
+    },
+    {
+        "query": "ReadEHR",
+        "args": ["1"]
+    },
+    {
+        "query": "GetAllEhrs",
+        "args": []
+    }
+]
