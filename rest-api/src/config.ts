@@ -135,7 +135,7 @@ export const mspIdBpjs = env
  */
 export const channelName = env
   .get('HLF_CHANNEL_NAME')
-  .default('mychannel')
+  .default('ehr-channel')
   .example('mychannel')
   .asString();
 

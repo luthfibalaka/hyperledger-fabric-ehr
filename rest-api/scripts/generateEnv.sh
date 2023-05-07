@@ -6,14 +6,14 @@
 
 ${AS_LOCAL_HOST:=true}
 
-: "${TEST_NETWORK_HOME:=../..}"
-: "${CONNECTION_PROFILE_FILE_HOSPITAL:=${TEST_NETWORK_HOME}/organizations/peerOrganizations/hospital.example.com/connection-hospital.json}"
-: "${CERTIFICATE_FILE_HOSPITAL:=${TEST_NETWORK_HOME}/organizations/peerOrganizations/hospital.example.com/users/User1@hospital.example.com/msp/signcerts/User1@hospital.example.com-cert.pem}"
-: "${PRIVATE_KEY_FILE_HOSPITAL:=${TEST_NETWORK_HOME}/organizations/peerOrganizations/hospital.example.com/users/User1@hospital.example.com/msp/keystore/priv_sk}"
+: "${TEST_NETWORK_HOME:=..}"
+: "${CONNECTION_PROFILE_FILE_HOSPITAL:=${TEST_NETWORK_HOME}/network/organizations/peerOrganizations/hospital.example.com/connection-hospital.json}"
+: "${CERTIFICATE_FILE_HOSPITAL:=${TEST_NETWORK_HOME}/network/organizations/peerOrganizations/hospital.example.com/users/User1@hospital.example.com/msp/signcerts/cert.pem}"
+: "${PRIVATE_KEY_FILE_HOSPITAL:=${TEST_NETWORK_HOME}/network/organizations/peerOrganizations/hospital.example.com/users/User1@hospital.example.com/msp/keystore/*_sk}"
 
-: "${CONNECTION_PROFILE_FILE_BPJS:=${TEST_NETWORK_HOME}/organizations/peerOrganizations/bpjs.example.com/connection-bpjs.json}"
-: "${CERTIFICATE_FILE_BPJS:=${TEST_NETWORK_HOME}/organizations/peerOrganizations/bpjs.example.com/users/User1@bpjs.example.com/msp/signcerts/User1@bpjs.example.com-cert.pem}"
-: "${PRIVATE_KEY_FILE_BPJS:=${TEST_NETWORK_HOME}/organizations/peerOrganizations/bpjs.example.com/users/User1@bpjs.example.com/msp/keystore/priv_sk}"
+: "${CONNECTION_PROFILE_FILE_BPJS:=${TEST_NETWORK_HOME}/network/organizations/peerOrganizations/bpjs.example.com/connection-bpjs.json}"
+: "${CERTIFICATE_FILE_BPJS:=${TEST_NETWORK_HOME}/network/organizations/peerOrganizations/bpjs.example.com/users/User1@bpjs.example.com/msp/signcerts/cert.pem}"
+: "${PRIVATE_KEY_FILE_BPJS:=${TEST_NETWORK_HOME}/network/organizations/peerOrganizations/bpjs.example.com/users/User1@bpjs.example.com/msp/keystore/*_sk}"
 
 
 cat << ENV_END > .env
