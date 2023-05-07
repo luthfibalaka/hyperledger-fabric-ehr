@@ -77,7 +77,7 @@ class AssetTransfer extends Contract {
         return JSON.stringify(ehr);
     }
 
-    async ReadEHR(ctx, id) {
+    async ReadEhr(ctx, id) {
         const assetJSON = await ctx.stub.getState(id);
         if (!assetJSON || assetJSON.length === 0) {
             throw new Error(`The asset ${id} does not exist`);
@@ -116,7 +116,7 @@ class AssetTransfer extends Contract {
         return ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(updatedEhr))));
     }
 
-    async DeleteEhrs(ctx, id) {
+    async DeleteEhr(ctx, id) {
         const exists = await this.EhrExists(ctx, id);
         if (!exists) {
             throw new Error(`The ehr ${id} does not exist`);
