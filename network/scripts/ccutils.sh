@@ -13,8 +13,8 @@ function installChaincode() {
   fi
   { set +x; } 2>/dev/null
   cat log.txt
-  verifyResult $res "Chaincode installation on peer0.org${ORG} has failed"
-  successln "Chaincode is installed on peer0.org${ORG}"
+  verifyResult $res "Chaincode installation on peer0.${ORG} has failed"
+  successln "Chaincode is installed on peer0.${ORG}"
 }
 
 # queryInstalled PEER ORG
@@ -26,8 +26,8 @@ function queryInstalled() {
   res=$?
   { set +x; } 2>/dev/null
   cat log.txt
-  verifyResult $res "Query installed on peer0.org${ORG} has failed"
-  successln "Query installed successful on peer0.org${ORG} on channel"
+  verifyResult $res "Query installed on peer0.${ORG} has failed"
+  successln "Query installed successful on peer0.${ORG} on channel"
 }
 
 # approveForMyOrg VERSION PEER ORG
@@ -39,8 +39,8 @@ function approveForMyOrg() {
   res=$?
   { set +x; } 2>/dev/null
   cat log.txt
-  verifyResult $res "Chaincode definition approved on peer0.org${ORG} on channel '$CHANNEL_NAME' failed"
-  successln "Chaincode definition approved on peer0.org${ORG} on channel '$CHANNEL_NAME'"
+  verifyResult $res "Chaincode definition approved on peer0.${ORG} on channel '$CHANNEL_NAME' failed"
+  successln "Chaincode definition approved on peer0.${ORG} on channel '$CHANNEL_NAME'"
 }
 
 # checkCommitReadiness VERSION PEER ORG
@@ -48,14 +48,14 @@ function checkCommitReadiness() {
   ORG=$1
   shift 1
   setGlobals $ORG
-  infoln "Checking the commit readiness of the chaincode definition on peer0.org${ORG} on channel '$CHANNEL_NAME'..."
+  infoln "Checking the commit readiness of the chaincode definition on peer0.${ORG} on channel '$CHANNEL_NAME'..."
   local rc=1
   local COUNTER=1
   # continue to poll
   # we either get a successful response, or reach MAX RETRY
   while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ]; do
     sleep $DELAY
-    infoln "Attempting to check the commit readiness of the chaincode definition on peer0.org${ORG}, Retry after $DELAY seconds."
+    infoln "Attempting to check the commit readiness of the chaincode definition on peer0.${ORG}, Retry after $DELAY seconds."
     set -x
     peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --sequence ${CC_SEQUENCE} ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} --output json >&log.txt
     res=$?
@@ -68,9 +68,9 @@ function checkCommitReadiness() {
   done
   cat log.txt
   if test $rc -eq 0; then
-    infoln "Checking the commit readiness of the chaincode definition successful on peer0.org${ORG} on channel '$CHANNEL_NAME'"
+    infoln "Checking the commit readiness of the chaincode definition successful on peer0.${ORG} on channel '$CHANNEL_NAME'"
   else
-    fatalln "After $MAX_RETRY attempts, Check commit readiness result on peer0.org${ORG} is INVALID!"
+    fatalln "After $MAX_RETRY attempts, Check commit readiness result on peer0.${ORG} is INVALID!"
   fi
 }
 
@@ -88,7 +88,7 @@ function commitChaincodeDefinition() {
   res=$?
   { set +x; } 2>/dev/null
   cat log.txt
-  verifyResult $res "Chaincode definition commit failed on peer0.org${ORG} on channel '$CHANNEL_NAME' failed"
+  verifyResult $res "Chaincode definition commit failed on peer0.${ORG} on channel '$CHANNEL_NAME' failed"
   successln "Chaincode definition committed on channel '$CHANNEL_NAME'"
 }
 
@@ -97,14 +97,14 @@ function queryCommitted() {
   ORG=$1
   setGlobals $ORG
   EXPECTED_RESULT="Version: ${CC_VERSION}, Sequence: ${CC_SEQUENCE}, Endorsement Plugin: escc, Validation Plugin: vscc"
-  infoln "Querying chaincode definition on peer0.org${ORG} on channel '$CHANNEL_NAME'..."
+  infoln "Querying chaincode definition on peer0.${ORG} on channel '$CHANNEL_NAME'..."
   local rc=1
   local COUNTER=1
   # continue to poll
   # we either get a successful response, or reach MAX RETRY
   while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ]; do
     sleep $DELAY
-    infoln "Attempting to Query committed status on peer0.org${ORG}, Retry after $DELAY seconds."
+    infoln "Attempting to Query committed status on peer0.${ORG}, Retry after $DELAY seconds."
     set -x
     peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name ${CC_NAME} >&log.txt
     res=$?
@@ -115,9 +115,9 @@ function queryCommitted() {
   done
   cat log.txt
   if test $rc -eq 0; then
-    successln "Query chaincode definition successful on peer0.org${ORG} on channel '$CHANNEL_NAME'"
+    successln "Query chaincode definition successful on peer0.${ORG} on channel '$CHANNEL_NAME'"
   else
-    fatalln "After $MAX_RETRY attempts, Query chaincode definition result on peer0.org${ORG} is INVALID!"
+    fatalln "After $MAX_RETRY attempts, Query chaincode definition result on peer0.${ORG} is INVALID!"
   fi
 }
 
@@ -143,14 +143,14 @@ function chaincodeInvokeInit() {
 function chaincodeQuery() {
   ORG=$1
   setGlobals $ORG
-  infoln "Querying on peer0.org${ORG} on channel '$CHANNEL_NAME'..."
+  infoln "Querying on peer0.${ORG} on channel '$CHANNEL_NAME'..."
   local rc=1
   local COUNTER=1
   # continue to poll
   # we either get a successful response, or reach MAX RETRY
   while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ]; do
     sleep $DELAY
-    infoln "Attempting to Query peer0.org${ORG}, Retry after $DELAY seconds."
+    infoln "Attempting to Query peer0.${ORG}, Retry after $DELAY seconds."
     set -x
     peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"Args":["org.hyperledger.fabric:GetMetadata"]}' >&log.txt
     res=$?
@@ -160,8 +160,8 @@ function chaincodeQuery() {
   done
   cat log.txt
   if test $rc -eq 0; then
-    successln "Query successful on peer0.org${ORG} on channel '$CHANNEL_NAME'"
+    successln "Query successful on peer0.${ORG} on channel '$CHANNEL_NAME'"
   else
-    fatalln "After $MAX_RETRY attempts, Query result on peer0.org${ORG} is INVALID!"
+    fatalln "After $MAX_RETRY attempts, Query result on peer0.${ORG} is INVALID!"
   fi
 }

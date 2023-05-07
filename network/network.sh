@@ -149,20 +149,20 @@ function createOrgs() {
     fi
     infoln "Generating certificates using cryptogen tool"
 
-    infoln "Creating Org1 Identities"
+    infoln "Creating Hospital Identities"
 
     set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-org1.yaml --output="organizations"
+    cryptogen generate --config=./organizations/cryptogen/crypto-config-hospital.yaml --output="organizations"
     res=$?
     { set +x; } 2>/dev/null
     if [ $res -ne 0 ]; then
       fatalln "Failed to generate certificates..."
     fi
 
-    infoln "Creating Org2 Identities"
+    infoln "Creating Bpjs Identities"
 
     set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-org2.yaml --output="organizations"
+    cryptogen generate --config=./organizations/cryptogen/crypto-config-bpjs.yaml --output="organizations"
     res=$?
     { set +x; } 2>/dev/null
     if [ $res -ne 0 ]; then
@@ -190,20 +190,20 @@ function createOrgs() {
 
     while :
     do
-      if [ ! -f "organizations/fabric-ca/org1/tls-cert.pem" ]; then
+      if [ ! -f "organizations/fabric-ca/hospital/tls-cert.pem" ]; then
         sleep 1
       else
         break
       fi
     done
 
-    infoln "Creating Org1 Identities"
+    infoln "Creating Hospital Identities"
 
-    createOrg1
+    createHospital
 
-    infoln "Creating Org2 Identities"
+    infoln "Creating Bpjs Identities"
 
-    createOrg2
+    createBpjs
 
     infoln "Creating Orderer Org Identities"
 
@@ -211,7 +211,7 @@ function createOrgs() {
 
   fi
 
-  infoln "Generating CCP files for Org1 and Org2"
+  infoln "Generating CCP files for Hospital and Bpjs"
   ./organizations/ccp-generate.sh
 }
 
@@ -264,7 +264,7 @@ function networkUp() {
   fi
 }
 
-# call the script to create the channel, join the peers of org1 and org2,
+# call the script to create the channel, join the peers of hospital and bpjs,
 # and then update the anchor peers for each organization
 function createChannel() {
   # Bring up the network if it is not already up.
@@ -334,7 +334,7 @@ function networkDown() {
   # Don't remove the generated artifacts -- note, the ledgers are always removed
   if [ "$MODE" != "restart" ]; then
     # Bring down the network, deleting the volumes
-    ${CONTAINER_CLI} volume rm docker_orderer.example.com docker_peer0.org1.example.com docker_peer0.org2.example.com
+    ${CONTAINER_CLI} volume rm docker_orderer.example.com docker_peer0.hospital.example.com docker_peer0.bpjs.example.com
     #Cleanup the chaincode containers
     clearContainers
     #Cleanup images
@@ -344,8 +344,8 @@ function networkDown() {
     # remove orderer block and other channel configuration transactions and certs
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf system-genesis-block/*.block organizations/peerOrganizations organizations/ordererOrganizations'
     ## remove fabric ca artifacts
-    ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org1/msp organizations/fabric-ca/org1/tls-cert.pem organizations/fabric-ca/org1/ca-cert.pem organizations/fabric-ca/org1/IssuerPublicKey organizations/fabric-ca/org1/IssuerRevocationPublicKey organizations/fabric-ca/org1/fabric-ca-server.db'
-    ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org2/msp organizations/fabric-ca/org2/tls-cert.pem organizations/fabric-ca/org2/ca-cert.pem organizations/fabric-ca/org2/IssuerPublicKey organizations/fabric-ca/org2/IssuerRevocationPublicKey organizations/fabric-ca/org2/fabric-ca-server.db'
+    ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/hospital/msp organizations/fabric-ca/hospital/tls-cert.pem organizations/fabric-ca/hospital/ca-cert.pem organizations/fabric-ca/hospital/IssuerPublicKey organizations/fabric-ca/hospital/IssuerRevocationPublicKey organizations/fabric-ca/hospital/fabric-ca-server.db'
+    ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/bpjs/msp organizations/fabric-ca/bpjs/tls-cert.pem organizations/fabric-ca/bpjs/ca-cert.pem organizations/fabric-ca/bpjs/IssuerPublicKey organizations/fabric-ca/bpjs/IssuerRevocationPublicKey organizations/fabric-ca/bpjs/fabric-ca-server.db'
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/ordererOrg/msp organizations/fabric-ca/ordererOrg/tls-cert.pem organizations/fabric-ca/ordererOrg/ca-cert.pem organizations/fabric-ca/ordererOrg/IssuerPublicKey organizations/fabric-ca/ordererOrg/IssuerRevocationPublicKey organizations/fabric-ca/ordererOrg/fabric-ca-server.db'
     # remove channel and script artifacts
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf channel-artifacts log.txt *.tar.gz'
@@ -360,7 +360,7 @@ MAX_RETRY=5
 # default for delay between commands
 CLI_DELAY=3
 # channel name defaults to "mychannel"
-CHANNEL_NAME="mychannel"
+CHANNEL_NAME="ehr-channel"
 # chaincode name defaults to "NA"
 CC_NAME="NA"
 # chaincode path defaults to "NA"

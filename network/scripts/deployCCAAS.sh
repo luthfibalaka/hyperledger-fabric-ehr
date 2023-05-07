@@ -8,7 +8,7 @@
 
 source scripts/utils.sh
 
-CHANNEL_NAME=${1:-"mychannel"}
+CHANNEL_NAME=${1:-"ehr-channel"}
 CC_NAME=${2}
 CC_SRC_PATH=${3}
 CCAAS_DOCKER_RUN=${4:-"true"}

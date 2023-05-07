@@ -15,19 +15,16 @@ createAnchorPeerUpdate() {
   infoln "Fetching channel config for channel $CHANNEL_NAME"
   fetchChannelConfig $ORG $CHANNEL_NAME ${CORE_PEER_LOCALMSPID}config.json
 
-  infoln "Generating anchor peer update transaction for Org${ORG} on channel $CHANNEL_NAME"
+  infoln "Generating anchor peer update transaction for ${ORG} on channel $CHANNEL_NAME"
 
-  if [ $ORG -eq 1 ]; then
-    HOST="peer0.org1.example.com"
+  if [ $ORG = "hospital" ]; then
+    HOST="peer0.hospital.example.com"
     PORT=7051
-  elif [ $ORG -eq 2 ]; then
-    HOST="peer0.org2.example.com"
+  elif [ $ORG = "bpjs" ]; then
+    HOST="peer0.bpjs.example.com"
     PORT=9051
-  elif [ $ORG -eq 3 ]; then
-    HOST="peer0.org3.example.com"
-    PORT=11051
   else
-    errorln "Org${ORG} unknown"
+    errorln "${ORG} unknown"
   fi
 
   set -x

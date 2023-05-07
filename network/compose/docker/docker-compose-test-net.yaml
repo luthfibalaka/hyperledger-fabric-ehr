@@ -5,8 +5,8 @@
 
 version: '3.7'
 services:
-  peer0.org1.example.com:
-    container_name: peer0.org1.example.com
+  peer0.hospital.example.com:
+    container_name: peer0.hospital.example.com
     image: hyperledger/fabric-peer:latest
     labels:
       service: hyperledger-fabric
@@ -18,8 +18,8 @@ services:
       - ./docker/peercfg:/etc/hyperledger/peercfg
       - ${DOCKER_SOCK}:/host/var/run/docker.sock
 
-  peer0.org2.example.com:
-    container_name: peer0.org2.example.com
+  peer0.bpjs.example.com:
+    container_name: peer0.bpjs.example.com
     image: hyperledger/fabric-peer:latest
     labels:
       service: hyperledger-fabric

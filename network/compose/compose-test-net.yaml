@@ -7,8 +7,8 @@ version: '3.7'
 
 volumes:
   orderer.example.com:
-  peer0.org1.example.com:
-  peer0.org2.example.com:
+  peer0.hospital.example.com:
+  peer0.bpjs.example.com:
 
 networks:
   test:
@@ -58,8 +58,8 @@ services:
     networks:
       - test
 
-  peer0.org1.example.com:
-    container_name: peer0.org1.example.com
+  peer0.hospital.example.com:
+    container_name: peer0.hospital.example.com
     image: hyperledger/fabric-peer:latest
     labels:
       service: hyperledger-fabric
@@ -73,22 +73,22 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variables
-      - CORE_PEER_ID=peer0.org1.example.com
-      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      - CORE_PEER_ID=peer0.hospital.example.com
+      - CORE_PEER_ADDRESS=peer0.hospital.example.com:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.hospital.example.com:7052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
-      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hospital.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hospital.example.com:7051
+      - CORE_PEER_LOCALMSPID=HospitalMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
-      - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:9444
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.hospital.example.com:9444
       - CORE_METRICS_PROVIDER=prometheus
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0org1"}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0hospital"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     volumes:
-        - ../organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com:/etc/hyperledger/fabric
-        - peer0.org1.example.com:/var/hyperledger/production
+        - ../organizations/peerOrganizations/hospital.example.com/peers/peer0.hospital.example.com:/etc/hyperledger/fabric
+        - peer0.hospital.example.com:/var/hyperledger/production
     working_dir: /root
     command: peer node start
     ports:
@@ -97,8 +97,8 @@ services:
     networks:
       - test
 
-  peer0.org2.example.com:
-    container_name: peer0.org2.example.com
+  peer0.bpjs.example.com:
+    container_name: peer0.bpjs.example.com
     image: hyperledger/fabric-peer:latest
     labels:
       service: hyperledger-fabric
@@ -112,22 +112,22 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variables
-      - CORE_PEER_ID=peer0.org2.example.com
-      - CORE_PEER_ADDRESS=peer0.org2.example.com:9051
+      - CORE_PEER_ID=peer0.bpjs.example.com
+      - CORE_PEER_ADDRESS=peer0.bpjs.example.com:9051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.org2.example.com:9052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.bpjs.example.com:9052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:9051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:9051
-      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.bpjs.example.com:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.bpjs.example.com:9051
+      - CORE_PEER_LOCALMSPID=BpjsMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp      
-      - CORE_OPERATIONS_LISTENADDRESS=peer0.org2.example.com:9445
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.bpjs.example.com:9445
       - CORE_METRICS_PROVIDER=prometheus
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0org2"}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0bpjs"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     volumes:
-        - ../organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com:/etc/hyperledger/fabric
-        - peer0.org2.example.com:/var/hyperledger/production
+        - ../organizations/peerOrganizations/bpjs.example.com/peers/peer0.bpjs.example.com:/etc/hyperledger/fabric
+        - peer0.bpjs.example.com:/var/hyperledger/production
     working_dir: /root
     command: peer node start
     ports:
@@ -154,7 +154,7 @@ services:
         - ../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
         - ../scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
     depends_on:
-      - peer0.org1.example.com
-      - peer0.org2.example.com
+      - peer0.hospital.example.com
+      - peer0.bpjs.example.com
     networks:
       - test
