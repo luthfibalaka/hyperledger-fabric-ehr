@@ -61,3 +61,12 @@ docker-compose up -d
 ```
 
 You can now access the EHR system from the Rest API! To learn how to use it, refer [here](https://www.postman.com/technical-geoscientist-15115418/workspace/ehr-sisdis)
+
+# NOTES
+
+1. Only Hospital organization can create, update, and delete EHR.
+2. Read EHR not only return details of an EHR, but also its history of change (immutable).
+
+# TODO
+
+1. Login and frontend
