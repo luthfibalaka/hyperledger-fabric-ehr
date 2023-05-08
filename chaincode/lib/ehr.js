@@ -58,7 +58,7 @@ class AssetTransfer extends Contract {
         diagnosis,
     ) {
         const MSPID = await ctx.clientIdentity.getMSPID();
-        if (MSPID.toLowerCase() === "bpjsmsp") {
+        if (MSPID.toLowerCase() === "org1msp") {
             throw new Error('Forbidden access');
         }
 
@@ -83,6 +83,14 @@ class AssetTransfer extends Contract {
     }
 
 	async ReadEhrHistory(ctx, id) {
+        const MSPID = await ctx.clientIdentity.getMSPID();
+        if (MSPID.toLowerCase() === "org1msp") {
+            const ehrData = JSON.parse(await this.ReadEhr(ctx, id));
+            if (ehrData.Insurance !== "BPJS") {
+                return JSON.stringify({});
+            }
+        }
+
 		let resultsIterator = await ctx.stub.getHistoryForKey(id);
 		let results = await this._GetAllResults(resultsIterator, true);
 		return JSON.stringify(results);
@@ -122,9 +130,14 @@ class AssetTransfer extends Contract {
 	}
 
     async ReadEhr(ctx, id) {
-        const assetJSON = await ctx.stub.getState(id);
+        let assetJSON = await ctx.stub.getState(id);
         if (!assetJSON || assetJSON.length === 0) {
             throw new Error(`The asset ${id} does not exist`);
+        }
+
+        const MSPID = await ctx.clientIdentity.getMSPID();
+        if (MSPID.toLowerCase() === "org1msp" && JSON.parse(assetJSON).Insurance !== "BPJS") {
+            assetJSON = JSON.stringify({})
         }
         return assetJSON.toString();
     }
@@ -142,7 +155,7 @@ class AssetTransfer extends Contract {
         diagnosis,
     ) {
         const MSPID = await ctx.clientIdentity.getMSPID();
-        if (MSPID.toLowerCase() === "bpjsmsp") {
+        if (MSPID.toLowerCase() === "org1msp") {
             throw new Error('Forbidden access');
         }
 
@@ -167,7 +180,7 @@ class AssetTransfer extends Contract {
 
     async DeleteEhr(ctx, id) {
         const MSPID = await ctx.clientIdentity.getMSPID();
-        if (MSPID.toLowerCase() === "bpjsmsp") {
+        if (MSPID.toLowerCase() === "org1msp") {
             throw new Error('Forbidden access');
         }
 
@@ -185,19 +198,25 @@ class AssetTransfer extends Contract {
 
     async GetAllEhrs(ctx) {
         const allResults = [];
-        // range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
+        const MSPID = await ctx.clientIdentity.getMSPID();
         const iterator = await ctx.stub.getStateByRange('', '');
         let result = await iterator.next();
         while (!result.done) {
             const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
             let record;
+            let authorized = true;
             try {
                 record = JSON.parse(strValue);
+                if (MSPID.toLowerCase() === "bpjsmsp" && record.Insurance !== "BPJS") {
+                    authorized = false;
+                }
             } catch (err) {
                 console.log(err);
                 record = strValue;
             }
-            allResults.push(record);
+            if (authorized) {
+                allResults.push(record);
+            }
             result = await iterator.next();
         }
         return JSON.stringify(allResults);

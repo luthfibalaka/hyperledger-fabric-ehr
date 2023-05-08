@@ -5,7 +5,7 @@
     },
     {
         "query": "ReadEhr",
-        "args": ["1"]
+        "args": ["2"]
     },
     {
         "query": "GetAllEhrs",
