@@ -58,7 +58,7 @@ class AssetTransfer extends Contract {
         diagnosis,
     ) {
         const MSPID = await ctx.clientIdentity.getMSPID();
-        if (MSPID.toLowerCase() === "org1msp") {
+        if (MSPID.toLowerCase() === "bpjsmsp") {
             throw new Error('Forbidden access');
         }
 
@@ -84,7 +84,7 @@ class AssetTransfer extends Contract {
 
 	async ReadEhrHistory(ctx, id) {
         const MSPID = await ctx.clientIdentity.getMSPID();
-        if (MSPID.toLowerCase() === "org1msp") {
+        if (MSPID.toLowerCase() === "bpjsmsp") {
             const ehrData = JSON.parse(await this.ReadEhr(ctx, id));
             if (ehrData.Insurance !== "BPJS") {
                 return JSON.stringify({});
@@ -136,7 +136,7 @@ class AssetTransfer extends Contract {
         }
 
         const MSPID = await ctx.clientIdentity.getMSPID();
-        if (MSPID.toLowerCase() === "org1msp" && JSON.parse(assetJSON).Insurance !== "BPJS") {
+        if (MSPID.toLowerCase() === "bpjsmsp" && JSON.parse(assetJSON).Insurance !== "BPJS") {
             assetJSON = JSON.stringify({})
         }
         return assetJSON.toString();
@@ -155,7 +155,7 @@ class AssetTransfer extends Contract {
         diagnosis,
     ) {
         const MSPID = await ctx.clientIdentity.getMSPID();
-        if (MSPID.toLowerCase() === "org1msp") {
+        if (MSPID.toLowerCase() === "bpjsmsp") {
             throw new Error('Forbidden access');
         }
 
@@ -180,7 +180,7 @@ class AssetTransfer extends Contract {
 
     async DeleteEhr(ctx, id) {
         const MSPID = await ctx.clientIdentity.getMSPID();
-        if (MSPID.toLowerCase() === "org1msp") {
+        if (MSPID.toLowerCase() === "bpjsmsp") {
             throw new Error('Forbidden access');
         }
 
