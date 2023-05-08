@@ -10,7 +10,7 @@ services:
       - fabric_test
   
   nodeapp:
-    image: 'ghcr.io/hyperledger/fabric-rest-sample:latest'
+    image: 'rest-api'
     command: ['start:dotenv']
     ports:
       - 3000:3000

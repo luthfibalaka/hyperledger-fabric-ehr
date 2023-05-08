@@ -1,7 +1,7 @@
 {
-  "name": "asset-transfer-basic",
+  "name": "ehr-rest-api",
   "version": "1.0.0",
-  "description": "Asset Transfer Basic REST API implemented in TypeScript",
+  "description": "EHR REST API implemented in TypeScript",
   "main": "dist/index.js",
   "engines": {
     "node": ">=12",
@@ -63,7 +63,7 @@
     "start:redis": "docker run -p 6379:6379 --name fabric-sample-redis -d redis --maxmemory-policy noeviction --requirepass \"${REDIS_PASSWORD}\"",
     "test": "jest"
   },
-  "author": "Hyperledger",
+  "author": "Luthfi Balaka",
   "license": "Apache-2.0",
   "private": true
 }

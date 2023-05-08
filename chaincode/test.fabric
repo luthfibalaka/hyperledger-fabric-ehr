@@ -4,11 +4,23 @@
         "args": []
     },
     {
-        "query": "ReadEHR",
+        "query": "ReadEhr",
         "args": ["1"]
     },
     {
         "query": "GetAllEhrs",
         "args": []
+    },
+    {
+        "query": "ReadEhrHistory",
+        "args": ["1"]
+    },
+    {
+        "invoke": "CreateEhr",
+        "args": ["3", "Andi", "", 1, "", "", "", [], []]
+    },
+    {
+        "invoke": "UpdateEhr",
+        "args": ["1", "Andi", "", 1, "", "", "", [], []]
     }
 ]

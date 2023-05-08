@@ -93,7 +93,7 @@ assetsRouter.post(
         req.body.PhoneNumber,
         req.body.Insurance,
         req.body.Medication,
-        req.body.Diagnosis,
+        req.body.Diagnosis
       );
 
       return res.status(ACCEPTED).json({
@@ -241,7 +241,7 @@ assetsRouter.put(
         req.body.PhoneNumber,
         req.body.Insurance,
         req.body.Medication,
-        req.body.Diagnosis,
+        req.body.Diagnosis
       );
 
       return res.status(ACCEPTED).json({

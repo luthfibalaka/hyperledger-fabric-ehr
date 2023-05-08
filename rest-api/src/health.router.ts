@@ -31,7 +31,8 @@ healthRouter.get('/live', async (req: Request, res: Response) => {
 
   try {
     const submitQueue = req.app.locals.jobq as Queue;
-    const qsccHospital = req.app.locals[config.mspIdHospital]?.qsccContract as Contract;
+    const qsccHospital = req.app.locals[config.mspIdHospital]
+      ?.qsccContract as Contract;
     const qsccBpjs = req.app.locals[config.mspIdBpjs]?.qsccContract as Contract;
 
     await Promise.all([
