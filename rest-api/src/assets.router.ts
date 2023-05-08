@@ -167,7 +167,10 @@ assetsRouter.get('/:ehrId', async (req: Request, res: Response) => {
     const data = await evatuateTransaction(contract, 'ReadEhr', ehrId);
     const ehr = JSON.parse(data.toString());
 
-    return res.status(OK).json(ehr);
+    const data2 = await evatuateTransaction(contract, 'ReadEhrHistory', ehrId);
+    const ehrHistory = JSON.parse(data2.toString());
+
+    return res.status(OK).json({ ehr, ehrHistory });
   } catch (err) {
     logger.error(
       { err },
