@@ -72,7 +72,7 @@ async function main() {
   app.locals.jobq = jobQueue;
 
   logger.info('Starting REST server');
-  app.listen(config.port, () => {
+  app.listen(config.port, '0.0.0.0', () => {
     logger.info('REST server started on port: %d', config.port);
   });
 }
