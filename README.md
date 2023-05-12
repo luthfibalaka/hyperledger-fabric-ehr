@@ -45,7 +45,7 @@ To clean up after usage, run:
 
 ## 2. Run the rest API
 
-Download package-lock.json form [here](https://drive.google.com/file/d/1HHagYyDumBfz2HgsAuCcK2BY-iySpFtI/view?usp=sharing) and copy to `/rest-api` (to make sure docker build running correctly). Then, do the following:
+Download package-lock.json form [here](https://drive.google.com/file/d/1HHagYyDumBfz2HgsAuCcK2BY-iySpFtI/view?usp=sharing) by running `curl -L -o "package-lock.json" "https://drive.google.com/uc?export=download&id=1HHagYyDumBfz2HgsAuCcK2BY-iySpFtI"` and copy to `/rest-api` (to make sure docker build running correctly). Then, do the following:
 
 ```
 cd rest-api/
