@@ -35,6 +35,14 @@ HLF_PRIVATE_KEY_BPJS="$(cat ${PRIVATE_KEY_FILE_BPJS} | sed -e 's/$/\\n/' | tr -d
 
 REDIS_PORT=6379
 
+EMAIL_HOSPITAL="hospital-admin@example.com"
+
+PASSWORD_HOSPITAL="hospitaladmin123"
+
+EMAIL_BPJS="bpjs-admin@example.com"
+
+PASSWORD_BPJS="bpjsadmin123"
+
 HOSPITAL_APIKEY=$(uuidgen)
 
 BPJS_APIKEY=$(uuidgen)
