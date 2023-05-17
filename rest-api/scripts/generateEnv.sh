@@ -47,6 +47,8 @@ HOSPITAL_APIKEY=$(uuidgen)
 
 BPJS_APIKEY=$(uuidgen)
 
+NODE_ENV="development"
+
 ENV_END
  
 if [ "${AS_LOCAL_HOST}" = "true" ]; then
