@@ -8,11 +8,12 @@ networks:
     name: fabric_test
 
 services:
-  deploy:
-    placement:
-      constraints:
-        - node.hostname==kemenkes
   orderer.example.com:
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname==kemenkes
     container_name: orderer.example.com
     image: hyperledger/fabric-orderer:latest
     labels:
