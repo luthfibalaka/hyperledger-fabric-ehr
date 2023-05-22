@@ -203,23 +203,17 @@ function networkUp() {
     createOrgs
   fi
 
-  # Uncomment to run in single node only
-  # COMPOSE_BASE_FILES_ORDERER="-f compose/${COMPOSE_FILE_BASE_ORDERER} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_ORDERER}"
-  # COMPOSE_BASE_FILES_HOSPITAL="-f compose/${COMPOSE_FILE_BASE_HOSPITAL} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_HOSPITAL}"
-  # COMPOSE_BASE_FILES_BPJS="-f compose/${COMPOSE_FILE_BASE_BPJS} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_BPJS}"
-  # COMPOSE_FILES="${COMPOSE_BASE_FILES_ORDERER} ${COMPOSE_BASE_FILES_HOSPITAL} ${COMPOSE_BASE_FILES_BPJS} ${COMPOSE_CA_FILES}"
+  COMPOSE_BASE_FILES_ORDERER="-f compose/${COMPOSE_FILE_BASE_ORDERER} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_ORDERER}"
+  COMPOSE_BASE_FILES_HOSPITAL="-f compose/${COMPOSE_FILE_BASE_HOSPITAL} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_HOSPITAL}"
+  COMPOSE_BASE_FILES_BPJS="-f compose/${COMPOSE_FILE_BASE_BPJS} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_BPJS}"
+  COMPOSE_FILES="${COMPOSE_BASE_FILES_ORDERER} ${COMPOSE_BASE_FILES_HOSPITAL} ${COMPOSE_BASE_FILES_BPJS} ${COMPOSE_CA_FILES}"
 
-  # DOCKER_SOCK="${DOCKER_SOCK}" ${CONTAINER_CLI_COMPOSE} ${COMPOSE_FILES} up -d 2>&1
+  DOCKER_SOCK="${DOCKER_SOCK}" ${CONTAINER_CLI_COMPOSE} ${COMPOSE_FILES} up -d 2>&1
 
-  # Run in multinode environment
-  docker stack deploy -c "compose/${COMPOSE_BASE_FILES_ORDERER}" -c "compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_BASE_FILES_ORDERER}" orderer
-  docker stack deploy -c "compose/${COMPOSE_FILE_BASE_HOSPITAL}" -c "compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_HOSPITAL}" hospital
-  docker stack deploy -c "compose/${COMPOSE_FILE_BASE_BPJS}" -c "compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_BPJS}" bpjs
-
-  # $CONTAINER_CLI ps -a
-  # if [ $? -ne 0 ]; then
-  #   fatalln "Unable to start network"
-  # fi
+  $CONTAINER_CLI ps -a
+  if [ $? -ne 0 ]; then
+    fatalln "Unable to start network"
+  fi
 }
 
 # call the script to create the channel, join the peers of hospital and bpjs,
