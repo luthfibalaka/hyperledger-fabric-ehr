@@ -1,21 +1,12 @@
 #!/bin/bash
 #
-# Copyright IBM Corp All Rights Reserved
-#
-# SPDX-License-Identifier: Apache-2.0
+# Modified from Hyperledger Fabric test-network script
 #
 
-# This script brings up a Hyperledger Fabric network for testing smart contracts
-# and applications. The test network consists of two organizations with one
-# peer each, and a single node Raft ordering service. Users can also use this
-# script to create a channel deploy a chaincode on the channel
+# This script brings up a Hyperledger Fabric network for EHR with two organizations,
+# Hospital & BPJS (as well as an orderer as Kemenkes). It automatically creates a channel
+# and deploy the chaincode to it.
 #
-# prepending $PWD/../bin to PATH to ensure we are picking up the correct binaries
-# this may be commented out to resolve installed version of tools if desired
-#
-# However using PWD in the path has the side effect that location that
-# this script is run from is critical. To ease this, get the directory
-# this script is actually in and infer location from there. (putting first)
 
 ROOTDIR=$(cd "$(dirname "$0")" && pwd)
 export PATH=${ROOTDIR}/../bin:${PWD}/../bin:$PATH
@@ -111,31 +102,7 @@ function checkPrereqs() {
   fi
 }
 
-# Before you can bring up a network, each organization needs to generate the crypto
-# material that will define that organization on the network. Because Hyperledger
-# Fabric is a permissioned blockchain, each node and user on the network needs to
-# use certificates and keys to sign and verify its actions. In addition, each user
-# needs to belong to an organization that is recognized as a member of the network.
-# You can use the Cryptogen tool or Fabric CAs to generate the organization crypto
-# material.
-
-# By default, the sample network uses cryptogen. Cryptogen is a tool that is
-# meant for development and testing that can quickly create the certificates and keys
-# that can be consumed by a Fabric network. The cryptogen tool consumes a series
-# of configuration files for each organization in the "organizations/cryptogen"
-# directory. Cryptogen uses the files to generate the crypto  material for each
-# org in the "organizations" directory.
-
-# You can also use Fabric CAs to generate the crypto material. CAs sign the certificates
-# and keys that they generate to create a valid root of trust for each organization.
-# The script uses Docker Compose to bring up three CAs, one for each peer organization
-# and the ordering organization. The configuration file for creating the Fabric CA
-# servers are in the "organizations/fabric-ca" directory. Within the same directory,
-# the "registerEnroll.sh" script uses the Fabric CA client to create the identities,
-# certificates, and MSP folders that are needed to create the test network in the
-# "organizations/ordererOrganizations" directory.
-
-# Create Organization crypto material using cryptogen or CAs
+# Create Organization crypto material using CAs
 function createOrgs() {
   if [ -d "organizations/peerOrganizations" ]; then
     rm -Rf organizations/peerOrganizations && rm -Rf organizations/ordererOrganizations
@@ -217,24 +184,10 @@ function createOrgs() {
 
 # Once you create the organization crypto material, you need to create the
 # genesis block of the application channel.
-
+#
 # The configtxgen tool is used to create the genesis block. Configtxgen consumes a
-# "configtx.yaml" file that contains the definitions for the sample network. The
-# genesis block is defined using the "TwoOrgsApplicationGenesis" profile at the bottom
-# of the file. This profile defines an application channel consisting of our two Peer Orgs.
-# The peer and ordering organizations are defined in the "Profiles" section at the
-# top of the file. As part of each organization profile, the file points to the
-# location of the MSP directory for each member. This MSP is used to create the channel
-# MSP that defines the root of trust for each organization. In essence, the channel
-# MSP allows the nodes and users to be recognized as network members.
+# "configtx.yaml" file that contains the definitions for the EHR network.
 #
-# If you receive the following warning, it can be safely ignored:
-#
-# [bccsp] GetDefault -> WARN 001 Before using BCCSP, please call InitFactories(). Falling back to bootBCCSP.
-#
-# You can ignore the logs regarding intermediate certs, we are not using them in
-# this crypto implementation.
-
 # After we create the org crypto material and the application channel genesis block,
 # we can now bring up the peers and ordering service. By default, the base
 # file for creating the network is "docker-compose-test-net.yaml" in the ``docker``
@@ -250,11 +203,11 @@ function networkUp() {
     createOrgs
   fi
 
-  COMPOSE_FILES="-f compose/${COMPOSE_FILE_BASE} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE}"
-
-  if [ "${DATABASE}" == "couchdb" ]; then
-    COMPOSE_FILES="${COMPOSE_FILES} -f compose/${COMPOSE_FILE_COUCH} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_COUCH}"
-  fi
+  # COMPOSE_FILES="-f compose/${COMPOSE_FILE_BASE} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE}"
+  COMPOSE_BASE_FILES_ORDERER="-f compose/${COMPOSE_FILE_BASE_ORDERER} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_ORDERER}"
+  COMPOSE_BASE_FILES_HOSPITAL="-f compose/${COMPOSE_FILE_BASE_HOSPITAL} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_HOSPITAL}"
+  COMPOSE_BASE_FILES_BPJS="-f compose/${COMPOSE_FILE_BASE_BPJS} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_BPJS}"
+  COMPOSE_FILES="${COMPOSE_BASE_FILES_ORDERER} ${COMPOSE_BASE_FILES_HOSPITAL} ${COMPOSE_BASE_FILES_BPJS} ${COMPOSE_CA_FILES}"
 
   DOCKER_SOCK="${DOCKER_SOCK}" ${CONTAINER_CLI_COMPOSE} ${COMPOSE_FILES} up -d 2>&1
 
@@ -317,10 +270,11 @@ function deployCCAAS() {
 # Tear down running network
 function networkDown() {
 
-  COMPOSE_BASE_FILES="-f compose/${COMPOSE_FILE_BASE} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE}"
-  COMPOSE_COUCH_FILES="-f compose/${COMPOSE_FILE_COUCH} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_COUCH}"
+  COMPOSE_BASE_FILES_ORDERER="-f compose/${COMPOSE_FILE_BASE_ORDERER} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_ORDERER}"
+  COMPOSE_BASE_FILES_HOSPITAL="-f compose/${COMPOSE_FILE_BASE_HOSPITAL} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_HOSPITAL}"
+  COMPOSE_BASE_FILES_BPJS="-f compose/${COMPOSE_FILE_BASE_BPJS} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_BPJS}"
   COMPOSE_CA_FILES="-f compose/${COMPOSE_FILE_CA} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_CA}"
-  COMPOSE_FILES="${COMPOSE_BASE_FILES} ${COMPOSE_COUCH_FILES} ${COMPOSE_CA_FILES}"
+  COMPOSE_FILES="${COMPOSE_BASE_FILES_ORDERER} ${COMPOSE_BASE_FILES_HOSPITAL} ${COMPOSE_BASE_FILES_BPJS} ${COMPOSE_CA_FILES}"
 
   if [ "${CONTAINER_CLI}" == "docker" ]; then
     DOCKER_SOCK=$DOCKER_SOCK ${CONTAINER_CLI_COMPOSE} ${COMPOSE_FILES} down --volumes --remove-orphans
@@ -373,13 +327,14 @@ CC_COLL_CONFIG="NA"
 CC_INIT_FCN="NA"
 # use this as the default docker-compose yaml definition
 COMPOSE_FILE_BASE=compose-test-net.yaml
-# docker-compose.yaml file if you are using couchdb
-COMPOSE_FILE_COUCH=compose-couch.yaml
+COMPOSE_FILE_BASE_HOSPITAL=compose-hospital.yaml
+COMPOSE_FILE_BASE_BPJS=compose-bpjs.yaml
+COMPOSE_FILE_BASE_ORDERER=compose-orderer.yaml
 # certificate authorities compose file
 COMPOSE_FILE_CA=compose-ca.yaml
 #
-# chaincode language defaults to "NA"
-CC_SRC_LANGUAGE="NA"
+# chaincode language defaults to "javascript"
+CC_SRC_LANGUAGE="javascript"
 # default to running the docker commands for the CCAAS
 CCAAS_DOCKER_RUN=true
 # Chaincode version
@@ -514,9 +469,6 @@ elif [ "$MODE" == "restart" ]; then
 elif [ "$MODE" == "deployCC" ]; then
   infoln "deploying chaincode on channel '${CHANNEL_NAME}'"
   deployCC
-elif [ "$MODE" == "deployCCAAS" ]; then
-  infoln "deploying chaincode-as-a-service on channel '${CHANNEL_NAME}'"
-  deployCCAAS
 else
   printHelp
   exit 1
