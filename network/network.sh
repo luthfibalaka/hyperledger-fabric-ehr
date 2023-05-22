@@ -212,9 +212,9 @@ function networkUp() {
   # DOCKER_SOCK="${DOCKER_SOCK}" ${CONTAINER_CLI_COMPOSE} ${COMPOSE_FILES} up -d 2>&1
 
   # Run in multinode environment
-  docker stack deploy -c compose/${COMPOSE_BASE_FILES_ORDERER} -c compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_BASE_FILES_ORDERER} orderer
-  docker stack deploy -c compose/${COMPOSE_FILE_BASE_HOSPITAL} -c compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_HOSPITAL} hospital
-  docker stack deploy -c compose/${COMPOSE_FILE_BASE_BPJS} -c compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_BPJS} bpjs
+  docker stack deploy -c "compose/${COMPOSE_BASE_FILES_ORDERER}" -c "compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_BASE_FILES_ORDERER}" orderer
+  docker stack deploy -c "compose/${COMPOSE_FILE_BASE_HOSPITAL}" -c "compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_HOSPITAL}" hospital
+  docker stack deploy -c "compose/${COMPOSE_FILE_BASE_BPJS}" -c "compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_BASE_BPJS}" bpjs
 
   # $CONTAINER_CLI ps -a
   # if [ $? -ne 0 ]; then
