@@ -48,6 +48,7 @@ services:
       - 7053:7053
       - 9443:9443
     deploy:
+      replicas: 1
       placement:
         constraints:
           - node.hostname==kemenkes

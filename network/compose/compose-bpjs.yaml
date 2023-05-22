@@ -9,6 +9,11 @@ networks:
 
 services:
   peer0.bpjs.example.com:
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname==bpjs
     container_name: peer0.bpjs.example.com
     image: hyperledger/fabric-peer:latest
     labels:
@@ -44,14 +49,15 @@ services:
     ports:
       - 9051:9051
       - 9445:9445
-    deploy:
-      placement:
-        constraints:
-          - node.hostname==bpjs
     networks:
       - test
 
   cli:
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname==bpjs
     container_name: cli
     image: hyperledger/fabric-tools:latest
     labels:

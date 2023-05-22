@@ -9,6 +9,11 @@ networks:
 
 services:
   peer0.hospital.example.com:
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname==hospital
     container_name: peer0.hospital.example.com
     image: hyperledger/fabric-peer:latest
     labels:
@@ -44,14 +49,15 @@ services:
     ports:
       - 7051:7051
       - 9444:9444
-    deploy:
-      placement:
-        constraints:
-          - node.hostname==hospital
     networks:
       - test
 
   cli:
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname==hospital
     container_name: cli
     image: hyperledger/fabric-tools:latest
     labels:
